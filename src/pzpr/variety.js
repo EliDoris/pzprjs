@@ -77,7 +77,14 @@
 		"rassi",
 		"parquet",
 		"lapaz",
-		"tren"
+		"tren",
+		"pentominous",
+		"hinge",
+		"tajmahal",
+		"statuepark",
+		"statuepark-aux",
+		"railpool",
+		"coral"
 	]);
 
 	(function(Genre, obj) {
@@ -131,14 +138,7 @@
 			arukone: [0, 0, "アルコネ", "Arukone", "numlin"],
 			ayeheya: [0, 1, "∀人∃ＨＥＹＡ", "ekawayeh", "heyawake"],
 			balance: [0, 0, "Balance Loop", "Balance Loop"],
-			cave: [
-				1,
-				0,
-				"バッグ",
-				"Cave",
-				"kurodoko",
-				{ alias: "bag", alias2: "corral", alias3: "correl" }
-			],
+			cave: [1, 0, "バッグ", "Cave", "kurodoko", { alias: "bag" }],
 			cbanana: [0, 0, "チョコバナナ", "Choco Banana"],
 			crossstitch: [0, 0, "Crossstitch", "Crossstitch"],
 			barns: [1, 0, "バーンズ", "Barns"],
@@ -162,6 +162,7 @@
 			chocona: [0, 0, "チョコナ", "Chocona", "shimaguni"],
 			cojun: [0, 0, "コージュン", "Cojun", "ripple"],
 			compass: [0, 0, "Compass", "Compass", "compass"],
+			coral: [0, 0, "Coral", "Coral", "nonogram"],
 			country: [1, 0, "カントリーロード", "Country Road"],
 			creek: [1, 0, "クリーク", "Creek"],
 			curvedata: [0, 0, "カーブデータ", "Curve Data"],
@@ -212,6 +213,7 @@
 				"heyawake",
 				{ alias: "heyawacky" }
 			],
+			hinge: [0, 0, "ちょうつがい", "Hinge", "shimaguni"],
 			hitori: [0, 1, "ひとりにしてくれ", "Hitori"],
 			icebarn: [1, 0, "アイスバーン", "Icebarn", "icebarn"],
 			icelom: [0, 0, "アイスローム", "Icelom", "icebarn"],
@@ -291,6 +293,7 @@
 			paintarea: [1, 0, "ペイントエリア", "Paintarea"],
 			parquet: [0, 0, "Parquet", "Parquet"],
 			pencils: [0, 0, "ペンシルズ", "Pencils"],
+			pentominous: [0, 0, "Pentominous", "Pentominous", "fillomino"],
 			pipelink: [1, 0, "パイプリンク", "Pipelink", "pipelink"],
 			pipelinkr: [
 				1,
@@ -300,6 +303,7 @@
 				"pipelink"
 			],
 			putteria: [0, 0, "プッテリア", "Putteria", "hanare"],
+			railpool: [0, 0, "Rail Pool", "Rail Pool"],
 			rassi: [0, 0, "Rassi Silai", "Rassi Silai", "country"],
 			rectslider: [0, 0, "四角スライダー", "Rectangle-Slider", "bonsan"],
 			reflect: [1, 0, "リフレクトリンク", "Reflect Link"],
@@ -341,11 +345,14 @@
 			],
 			snake: [0, 0, "Snake", "Snake"],
 			starbattle: [0, 0, "スターバトル", "Star Battle"],
+			statuepark: [0, 0, "Statue Park", "Statue Park"],
+			"statuepark-aux": [0, 0, "図形の編集", "Edit shape"],
 			stostone: [0, 0, "ストストーン", "Stostone", "shimaguni"],
 			sudoku: [0, 1, "数独", "Sudoku"],
 			sukoro: [1, 0, "数コロ", "Sukoro", "sukoro"],
 			sukororoom: [0, 0, "数コロ部屋", "Sukoro-room", "sukoro"],
 			symmarea: [0, 0, "シンメトリーエリア", "Symmetry Area", "fillomino"],
+			tajmahal: [0, 0, "タージ・マハル", "Taj Mahal", "kouchoku"],
 			tapa: [0, 0, "Tapa", "Tapa"],
 			tapaloop: [0, 0, "Tapa-Like Loop", "Tapa-Like Loop"],
 			tasquare: [0, 0, "たすくえあ", "Tasquare"],
@@ -358,7 +365,7 @@
 			toichika: [0, 0, "遠い誓い", "Toichika"],
 			toichika2: [0, 0, "遠い誓い２", "Toichika 2", "toichika"],
 			tontti: [0, 0, "Tonttiraja", "Tonttiraja"],
-			tren: [0, 0, "Tren", "Tren"],
+			tren: [0, 0, "パーキング", "Tren"],
 			triplace: [0, 0, "トリプレイス", "Tri-place"],
 			usotatami: [0, 0, "ウソタタミ", "Uso-tatami", "fillmat"],
 			usoone: [0, 0, "ウソワン", "Uso-one"],

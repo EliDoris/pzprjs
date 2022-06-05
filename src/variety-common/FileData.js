@@ -489,19 +489,17 @@ pzpr.classmgr.makeCommon({
 				s = 0,
 				data = "";
 			for (var i = 0, rows = 2 * bd.rows - 1; i < rows; i++) {
-				var line = this.readLine();
-				if (line) {
-					data += line.match(/[12X\.]+/)[0];
-				}
+				data += this.readLine();
 			}
 			bd.disableInfo();
 			for (var s = 0; s < data.length; ++s) {
 				var dot = bd.dots[s],
-					ca = data.charAt(s);
-				if (ca === "1") {
-					dot.setDot(1);
-				} else if (ca === "2") {
-					dot.setDot(2);
+					ca = data.charAt(s),
+					num = +ca;
+				if (num >= 1 && num <= 9) {
+					dot.setDot(num);
+				} else if (ca === "-") {
+					dot.setDot(-2);
 				} else if (ca === "X") {
 					dot.piece.ques = 7;
 				}
@@ -515,12 +513,12 @@ pzpr.classmgr.makeCommon({
 				var data = "";
 				for (var bx = 1; bx <= 2 * bd.cols - 1; bx++) {
 					var dot = bd.dots[s];
-					if (dot.getDot() === 1) {
-						data += "1";
-					} else if (dot.getDot() === 2) {
-						data += "2";
+					if (dot.getDot() >= 1 && dot.getDot() <= 9) {
+						data += dot.getDot();
 					} else if (dot.piece.ques === 7) {
 						data += "X";
+					} else if (dot.getDot() === -2) {
+						data += "-";
 					} else {
 						data += ".";
 					}
@@ -528,6 +526,67 @@ pzpr.classmgr.makeCommon({
 				}
 				this.writeLine(data);
 			}
+		},
+
+		//---------------------------------------------------------------------------
+		// fio.decodePieceBank() Decode piece bank preset/custom
+		// fio.encodePieceBank() Encode piece bank preset/custom
+		//---------------------------------------------------------------------------
+		decodePieceBank: function() {
+			var bank = this.board.bank;
+			var head = this.readLine();
+			if (isNaN(head)) {
+				for (var i = 0; i < bank.presets.length; i++) {
+					if (bank.presets[i].shortkey === head) {
+						bank.initialize(bank.presets[i].constant);
+						break;
+					}
+				}
+			} else {
+				var pieces = [];
+				for (var i = 0; i < +head; i++) {
+					pieces.push(this.readLine());
+				}
+
+				bank.initialize(pieces);
+			}
+		},
+		encodePieceBank: function() {
+			var bank = this.board.bank;
+
+			var pieces = bank.pieces.map(function(p) {
+				return p.serialize();
+			});
+
+			for (var i = 0; i < bank.presets.length; i++) {
+				if (!bank.presets[i].constant) {
+					continue;
+				}
+				if (this.puzzle.pzpr.util.sameArray(bank.presets[i].constant, pieces)) {
+					this.writeLine(bank.presets[i].shortkey);
+					return;
+				}
+			}
+
+			this.writeLine("" + pieces.length);
+			for (var i = 0; i < pieces.length; i++) {
+				this.writeLine(pieces[i]);
+			}
+		},
+		decodePieceBankQcmp: function() {
+			var nums = (this.readLine() || "").split(" ");
+			var count = Math.min(nums.length, this.board.bank.pieces.length);
+			for (var i = 0; i < count; i++) {
+				this.board.bank.pieces[i].qcmp = +nums[i];
+			}
+		},
+		encodePieceBankQcmp: function() {
+			var data = this.board.bank.pieces
+				.map(function(piece) {
+					return piece.qcmp + " ";
+				})
+				.join("");
+			this.writeLine(data);
 		},
 
 		//---------------------------------------------------------------------------

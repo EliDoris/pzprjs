@@ -1128,19 +1128,12 @@ pzpr.classmgr.makeCommon({
 		//     shape, counting all orientations as equal.
 		//--------------------------------------------------------------------------------
 		isDifferentShapeBlock: function(area1, area2) {
-			if (area1.size !== area2.size) {
+			if (area1.clist.length !== area2.clist.length) {
 				return true;
 			}
 			var s1 = area1.clist.getBlockShapes(),
 				s2 = area2.clist.getBlockShapes();
-			var t1 = s1.cols === s2.cols && s1.rows === s2.rows ? 0 : 4;
-			var t2 = s1.cols === s2.rows && s1.rows === s2.cols ? 8 : 4;
-			for (var t = t1; t < t2; t++) {
-				if (s2.data[0] === s1.data[t]) {
-					return false;
-				}
-			}
-			return true;
+			return s1.canon !== s2.canon;
 		},
 
 		//--------------------------------------------------------------------------------
@@ -1210,6 +1203,107 @@ pzpr.classmgr.makeCommon({
 			}
 
 			return errclist;
+		},
+
+		//--------------------------------------------------------------------------------
+		// ans.checkBankPiecesAvailable(): Check if all pieces on the board are
+		// represented in the Bank, and no counts are exceeded.
+		// ans.checkBankPiecesUsed(): Check if all piece count requirements are met.
+		//--------------------------------------------------------------------------------
+		getBoardPiecesMap: function() {
+			if (this._info.boardpiecesmap) {
+				return this._info.boardpiecesmap;
+			}
+			if (!this._info.boardpieces) {
+				this._info.boardpieces = this.board.getBankPiecesInGrid();
+			}
+
+			var ret = {};
+			this._info.boardpieces.forEach(function(p) {
+				if (!(p[0] in ret)) {
+					ret[p[0]] = [p[1]];
+				} else {
+					ret[p[0]].push(p[1]);
+				}
+			});
+			return (this._info.boardpiecesmap = ret);
+		},
+
+		checkBankPiecesInvalid: function() {
+			var pieces = this.getBoardPiecesMap();
+
+			for (var key in pieces) {
+				var found = false;
+				for (var b = 0; b < this.board.bank.pieces.length; b++ && !found) {
+					if (key === this.board.bank.pieces[b].canonize()) {
+						found = true;
+					}
+				}
+				if (!found) {
+					this.failcode.add("bankInvalid");
+					if (this.checkOnly) {
+						break;
+					}
+					pieces[key].forEach(function(list) {
+						list.seterr(1);
+					});
+				}
+			}
+		},
+
+		checkBankPiecesAvailable: function() {
+			var pieces = this.getBoardPiecesMap();
+			var counts = {};
+			for (var b = 0; b < this.board.bank.pieces.length; b++) {
+				var key = this.board.bank.pieces[b].canonize();
+				if (!(key in counts)) {
+					counts[key] = 0;
+				}
+				counts[key] += this.board.bank.pieces[b].count;
+			}
+
+			for (var key in pieces) {
+				if (key in counts && counts[key] < pieces[key].length) {
+					this.failcode.add("bankGt");
+					if (this.checkOnly) {
+						break;
+					}
+					this.board.bank.pieces.forEach(function(piece) {
+						if (piece.canonize() === key) {
+							piece.seterr(1);
+						}
+					});
+
+					pieces[key].forEach(function(list) {
+						list.seterr(1);
+					});
+				}
+			}
+		},
+		checkBankPiecesUsed: function() {
+			var pieces = this.getBoardPiecesMap();
+			var counts = {};
+			for (var b = 0; b < this.board.bank.pieces.length; b++) {
+				var key = this.board.bank.pieces[b].canonize();
+				if (!(key in counts)) {
+					counts[key] = 0;
+				}
+				counts[key] += this.board.bank.pieces[b].count;
+			}
+
+			for (var key in counts) {
+				if (!(key in pieces) || counts[key] > pieces[key].length) {
+					this.failcode.add("bankLt");
+					if (this.checkOnly) {
+						break;
+					}
+					this.board.bank.pieces.forEach(function(piece) {
+						if (piece.canonize() === key) {
+							piece.seterr(1);
+						}
+					});
+				}
+			}
 		}
 	}
 });

@@ -112,7 +112,11 @@ ui.keypopup = {
 		oneroom: [10, 0],
 		tontti: [10, 0],
 		lapaz: [10, 0],
-		tren: [10, 0]
+		tren: [10, 0],
+		pentominous: [119, 119],
+		hinge: [10, 0],
+		tajmahal: [8, 0],
+		railpool: [10, 0]
 	},
 
 	//---------------------------------------------------------------------------
@@ -230,6 +234,8 @@ ui.keypopup = {
 			this.generate_bdwalk();
 		} else if (type === 118) {
 			this.generate_voxas();
+		} else if (type === 119) {
+			this.generate_pentominous(mode);
 		}
 	},
 	gentable4: function(mode) {
@@ -571,6 +577,17 @@ ui.keypopup = {
 			],
 			3
 		);
+	},
+	generate_pentominous: function(mode) {
+		var items = "filnptuvwxyz".split("").map(function(c) {
+			return [c, { text: c.toUpperCase() }];
+		});
+		if (mode === 1) {
+			items.push(["-", "?"], ["q", "■"]);
+		}
+		items.push(" ");
+
+		this.generate_main(items, 5);
 	},
 
 	generate_main: function(list, split) {

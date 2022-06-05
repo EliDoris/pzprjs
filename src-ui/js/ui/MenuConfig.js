@@ -139,9 +139,7 @@
 			}
 
 			if (idname === "mode" || idname === "inputmode") {
-				if (ui.popupmgr.popups.auxeditor.pop) {
-					ui.popupmgr.popups.auxeditor.close();
-				}
+				ui.auxeditor.close();
 			}
 
 			if (idname === "mode") {
