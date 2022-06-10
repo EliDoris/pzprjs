@@ -56,7 +56,9 @@ pzpr.env = (function() {
 			isbrowser &&
 			(ChromeVersion || 1000) >= 18 &&
 			(SafariVersion || 1000) >= 6,
-		svgTextLength: !isbrowser || (FireFoxVersion || 1000) >= 25,
+		svgTextLength:
+			(!isbrowser && (!process || !process.env.VERCEL)) ||
+			(FireFoxVersion || 1000) >= 25,
 		anchor_download:
 			isbrowser && document.createElement("a").download !== void 0
 	};
