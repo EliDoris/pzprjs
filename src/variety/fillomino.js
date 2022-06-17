@@ -315,7 +315,7 @@
 				}
 				return;
 			}
-			var num = block.clist[0].getNum();
+			var num = this.pid !== "pentominous" ? block.clist[0].getNum() : 5;
 			var newcmp = num === block.clist.length ? 1 : 0;
 			if (newcmp !== this.qcmp) {
 				this.setQcmp(newcmp);
