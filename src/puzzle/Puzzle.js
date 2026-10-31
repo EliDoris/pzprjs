@@ -19,7 +19,9 @@
 		this.editmode = !this.playeronly; // 問題配置モード
 		this.playmode = !this.editmode; // 回答モード
 
-		this.resetTime();
+		if (modeid === 1) {
+			this.resetTime();
+		}
 
 		this.preInitCanvasInfo = {
 			type: option.graphic || "",
@@ -232,8 +234,12 @@
 		// owner.resetTime()      開始時間をリセットする
 		// owner.getTime()        開始からの時間をミリ秒単位で取得する
 		//---------------------------------------------------------------------------
-		resetTime: function() {
-			this.starttime = pzpr.util.currentTime();
+		resetTime: function(toZero) {
+			var savedTime = ui && !toZero ? ui.savedTime || 0 : 0;
+			this.starttime = pzpr.util.currentTime() - savedTime;
+			if (this.pausetime) {
+				this.pausetime = this.starttime;
+			}
 		},
 		getTime: function() {
 			return this.pausetime === null
@@ -242,12 +248,30 @@
 		},
 		togglePause: function() {
 			if (this.pausetime === null) {
-				document.body.classList.add("paused");
-				this.pausetime = pzpr.util.currentTime();
+				this.pause();
 			} else {
-				document.body.classList.remove("paused");
+				this.unpause();
+			}
+		},
+		pause: function() {
+			if (this.pausetime) {
+				return;
+			} // Don't overwrite pause time if there already is one
+			document.body.classList.add("paused");
+			this.pausetime = pzpr.util.currentTime();
+		},
+		unpause: function() {
+			document.body.classList.remove("paused");
+			if (this.pausetime) {
 				this.starttime += pzpr.util.currentTime() - this.pausetime;
 				this.pausetime = null;
+			}
+		},
+		hardResetTime: function() {
+			this.unpause();
+			if (ui) {
+				delete ui.savedTime;
+				ui.disableAutosave = true;
 			}
 		},
 
@@ -447,7 +471,9 @@
 					postCanvasReady(puzzle);
 				}
 
-				puzzle.resetTime();
+				if (puzzle.instancetype === "player") {
+					puzzle.resetTime();
+				}
 
 				if (!!callback) {
 					callback(puzzle);

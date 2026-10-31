@@ -23,7 +23,7 @@
 
 			// ui.menuconfig is not yet populated, so need to manually check
 			var json_menu = localStorage.getItem("pzprv3_config:ui");
-			if (json_menu && JSON.parse(json_menu)["autosave"]) {
+			if (json_menu && JSON.parse(json_menu)["autosave"] !== false) {
 				var str = getPuzzleString();
 				var index = str.indexOf("/");
 
@@ -41,6 +41,10 @@
 		if (storedGame) {
 			var valObject = JSON.parse(storedGame);
 			pzl = importData(valObject.pzl);
+			var savedTime = valObject.st;
+			if (isFinite(savedTime) && savedTime > 0) {
+				ui.savedTime = savedTime;
+			}
 		} else {
 			pzl = importData();
 		}
@@ -184,10 +188,11 @@
 		while (url.match(/^(\w+)\=(\w+)\&(.*)/)) {
 			url = RegExp.$3;
 		}
-		//Add a time signifier so that we can sort and delete oldest if setting fails
+		//Compile the save object to be stored in localStorage
 		var valObject = {
-			t: Date.now(),
-			pzl: url
+			t: Date.now(), //Current time in ms, used for delete-oldestfirst logic
+			st: ui.puzzle.getTime(), //Solve time in ms
+			pzl: url //Puzzle string representing the current board state
 			// bufferToForceStorageLimitErrors: "0".repeat(1700000) //Include for testing to force out-of-storage errors
 		};
 		pzpr.util.store(key, JSON.stringify(valObject));
@@ -195,7 +200,7 @@
 
 	//Events that trigger a board state save
 	document.addEventListener("visibilitychange", function() {
-		if (document.visibilityState === "hidden") {
+		if (document.visibilityState === "hidden" && ui.disableAutosave !== true) {
 			saveBoardState();
 		}
 	});

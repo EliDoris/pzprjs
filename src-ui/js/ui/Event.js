@@ -71,8 +71,8 @@ ui.event = {
 		// onbeforeunloadイベントを割り当てる
 		this.addEvent(window, "beforeunload", this, this.onbeforeunload_func);
 
-		// onunloadイベントを割り当てる
-		this.addEvent(window, "unload", this, this.onunload_func);
+		// onpagehideイベントを割り当てる
+		this.addEvent(window, "pagehide", this, this.onpagehide_func);
 
 		if (!!matchMedia) {
 			var mqString = "(resolution: 1dppx)";
@@ -92,7 +92,7 @@ ui.event = {
 
 	//---------------------------------------------------------------------------
 	// event.onload_func()   ウィンドウを開いた時に呼ばれる関数
-	// event.onunload_func() ウィンドウをクローズする前に呼ばれる関数
+	// event.onpagehide_func() ウィンドウをクローズする前に呼ばれる関数
 	//---------------------------------------------------------------------------
 	onload_func: function(onload_option) {
 		ui.initFileReadMethod();
@@ -108,7 +108,7 @@ ui.event = {
 			});
 		}
 	},
-	onunload_func: function() {
+	onpagehide_func: function() {
 		ui.menuconfig.save();
 	},
 
@@ -141,13 +141,20 @@ ui.event = {
 
 	onvisibilitychange_func: function(e) {
 		var state = document.visibilityState;
+		var puzzle = ui.puzzle;
 		if (state !== this.visibilitystate) {
 			this.visibilitystate = state;
 			if (state === "visible") {
+				if (puzzle.wasPaused === false) {
+					puzzle.unpause();
+				}
 				for (var i = 0; i < this.visibilityCallbacks.length; i++) {
 					this.visibilityCallbacks[i]();
 				}
 				this.visibilityCallbacks = [];
+			} else {
+				puzzle.wasPaused = puzzle.pausetime !== null;
+				puzzle.pause();
 			}
 		}
 	},
